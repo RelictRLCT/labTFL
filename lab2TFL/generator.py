@@ -47,6 +47,7 @@ def generate_labyrinth() -> DFA:
     init_dfa = init_dfa.from_nfa(target_nfa=init_nfa)
 
     show(init_dfa)
+
     # Избавление от нетупиковых финальных состояний, которые могли появиться
     new_final_states = remove_not_dead_end(init_dfa.final_states, init_dfa.transitions)
 
