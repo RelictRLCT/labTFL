@@ -7,6 +7,11 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+automata-lib = "^8.4.0"
+coloraide = "^4.0"
+pygraphviz = "^1.14"
+graphviz = "^0.20.3"
+matplotlib = "^3.9.2"
 
 
 [build-system]
