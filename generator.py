@@ -19,7 +19,7 @@ def generate_regex() -> str:
     file.close()
 
     '''Нужна более точная оценка'''
-    limit = limit // 2
+    # limit = limit // 2
 
     random_count_of_alternate: int
     if limit >= 4:
@@ -139,8 +139,6 @@ def generate_regex() -> str:
 
         regex_alternate_list.append(part_regex)
 
-    print(regex_alternate_list)
-
     regex = ''
     for reg in regex_alternate_list:
         regex += reg + '|'
@@ -207,7 +205,7 @@ def generate_labyrinth() -> DFA:
         initial_state=init_dfa.initial_state,
         final_states=new_final_states,
         allow_partial=True
-    )
+    ).minify()
 
     print(f"Количество состояний:{len(labyrinth.states)}")
 
