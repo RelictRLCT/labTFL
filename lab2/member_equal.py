@@ -1,6 +1,5 @@
 from automata.fa.dfa import DFA
-from automata.fa.nfa import NFA
-from show import show
+from lab2.show import show
 
 if __name__ == "__main__":
     dfa1 = DFA(

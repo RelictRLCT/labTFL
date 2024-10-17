@@ -1,7 +1,6 @@
 from automata.fa.dfa import DFA
-from automata.fa.nfa import NFA
-from generator import generate_labyrinth
-from show import show
+from lab2.generator import generate_labyrinth
+from lab2.show import show
 
 if __name__ == '__main__':
 

@@ -1,12 +1,8 @@
 import random
-from itertools import repeat
-from pprint import pprint
 from typing import Mapping, Any, AbstractSet
-import math
 from automata.fa.dfa import DFA
 from automata.fa.nfa import NFA
 
-from show import show
 # Буду строить НКА с помощью случайной регулярки, потом перевод в ДКА и минимизация
 # Длина регулярки должна быть примерно log(N) по основанию 2, где N - оценка сверху числа состояний (худший случай -
 # экспоненциальный рост при переводе НКА в ДКА (перевод регулярки в НКА примерно O(n) от длины регулярки)
