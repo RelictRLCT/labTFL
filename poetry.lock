@@ -650,6 +650,25 @@ typing = ["typing-extensions"]
 xmp = ["defusedxml"]
 
 [[package]]
+name = "pydot"
+version = "3.0.2"
+description = "Python interface to Graphviz's Dot"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pydot-3.0.2-py3-none-any.whl", hash = "sha256:99cedaa55d04abb0b2bc56d9981a6da781053dd5ac75c428e8dd53db53f90b14"},
+    {file = "pydot-3.0.2.tar.gz", hash = "sha256:9180da540b51b3aa09fbf81140b3edfbe2315d778e8589a7d0a4a69c41332bae"},
+]
+
+[package.dependencies]
+pyparsing = ">=3.0.9"
+
+[package.extras]
+dev = ["chardet", "parameterized", "ruff"]
+release = ["zest.releaser[recommended]"]
+tests = ["chardet", "parameterized", "pytest", "pytest-cov", "pytest-xdist[psutil]", "ruff", "tox"]
+
+[[package]]
 name = "pygraphviz"
 version = "1.14"
 description = "Python interface to Graphviz"
@@ -712,4 +731,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6c3ac898adc3d1c884d367e3ac9de9ad687c98b0c8e153b198f600cdd933002e"
+content-hash = "bb71b53fae76454399347b8b12c032d9cad903fa9f7dcfc06f491d2caab6c1e4"
