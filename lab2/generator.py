@@ -2,6 +2,7 @@ import random
 from typing import Mapping, Any, AbstractSet
 from automata.fa.dfa import DFA
 from automata.fa.nfa import NFA
+from show import show
 
 # Буду строить НКА с помощью случайной регулярки, потом перевод в ДКА и минимизация
 # Длина регулярки должна быть примерно log(N) по основанию 2, где N - оценка сверху числа состояний (худший случай -
@@ -9,11 +10,8 @@ from automata.fa.nfa import NFA
 #
 # Обновлено: на реальных данных и алфавите из 2 символов зависимость +- линейная, поэтому длину регулярки буду
 # использовать равную ограничению из файла, а потом, в случае превышения, удалю случайные состояния
-def generate_regex() -> str:
-    file = open('parameters.txt', 'r')
-    limit = int(file.readline())
-    file.close()
-
+def generate_regex(n: int) -> str:
+    limit = n
     '''Нужна более точная оценка'''
     # limit = limit // 2
 
@@ -140,8 +138,6 @@ def generate_regex() -> str:
         regex += reg + '|'
     regex = regex[:len(regex) - 1]
 
-    print(regex)
-
     return regex
 
 # Функция для удаления финальных состояний, которые не являются тупиковыми.
@@ -157,6 +153,19 @@ def remove_not_dead_end(finals: AbstractSet, transitions: Mapping[Any, Mapping[s
             new_finals.add(fin)
     return new_finals
 
+
+def add_loops(states: AbstractSet, transitions: Mapping[str, Mapping[str, Any]]) -> Mapping[str, Mapping[str, Any]]:
+    new_transitions = dict(transitions)
+    for state in states:
+        if len(new_transitions[state].values()) == 1:
+            match list(new_transitions[state].keys())[0]:
+                case 'L':
+                    new_transitions[state] = {'L': new_transitions[state]['L'], 'R': state}
+                case 'R':
+                    new_transitions[state] = {'L': state, 'R': new_transitions[state]['R']}
+        elif len(new_transitions[state].values()) == 0:
+            new_transitions[state] = {'L': state, 'R': state}
+    return new_transitions
 
 def generate_labyrinth() -> DFA:
     init_dfa = DFA(
@@ -175,34 +184,53 @@ def generate_labyrinth() -> DFA:
         final_states={'q0'}
     )
 
+    file = open('../parameters.txt', 'r')
+    limit = int(file.readline())
+    file.close()
+
     while True:
         # Генерация регулярки и НКА по ней
-        regex = generate_regex()
+        regex = generate_regex(limit)
         init_nfa = init_nfa.from_regex(regex=regex, input_symbols={'L', 'R'})
-
-        # show(init_nfa)
 
         # Детерминизация
         init_dfa = init_dfa.from_nfa(target_nfa=init_nfa)
 
-        # show(init_dfa)
+        new_transitions = add_loops(init_dfa.states, init_dfa.transitions)
+        init_dfa = DFA(
+            states=init_dfa.states,
+            input_symbols=init_dfa.input_symbols,
+            transitions=new_transitions,
+            initial_state=init_dfa.initial_state,
+            final_states=init_dfa.final_states,
+            allow_partial=False
+        )
 
         # Избавление от нетупиковых финальных состояний, которые могли появиться
         new_final_states = remove_not_dead_end(init_dfa.final_states, init_dfa.transitions)
 
+        # Добавление переходов в себя для состояний, из которых переход только по одному символу
+        new_transitions = add_loops(init_dfa.states, init_dfa.transitions)
+
+        # Создание итогового лабиринта
+        labyrinth = DFA(
+            states=init_dfa.states,
+            input_symbols=init_dfa.input_symbols,
+            transitions=new_transitions,
+            initial_state=init_dfa.initial_state,
+            final_states=new_final_states,
+            allow_partial=False
+        )
+        #.minify()
+
+        if len(labyrinth.states) > limit:
+            print("Перегенерация лабиринта...")
+            continue
         if len(new_final_states) != 0:
             break
 
-    # Создание итогового лабиринта
-    labyrinth = DFA(
-        states=init_dfa.states,
-        input_symbols=init_dfa.input_symbols,
-        transitions=init_dfa.transitions,
-        initial_state=init_dfa.initial_state,
-        final_states=new_final_states,
-        allow_partial=True
-    ).minify()
+    print(f'Регулярка: {regex}')
 
-    print(f"Количество состояний:{len(labyrinth.states)}")
+    print(f"Начальное количество состояний:{len(labyrinth.states)}")
 
     return labyrinth
