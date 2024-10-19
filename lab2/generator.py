@@ -12,8 +12,6 @@ from show import show
 # использовать равную ограничению из файла, а потом, в случае превышения, удалю случайные состояния
 def generate_regex(n: int) -> str:
     limit = n
-    '''Нужна более точная оценка'''
-    # limit = limit // 2
 
     random_count_of_alternate: int
     if limit >= 4:
@@ -29,7 +27,7 @@ def generate_regex(n: int) -> str:
     remainder = limit % random_count_of_alternate
     for i in range (random_count_of_alternate):
         pieces.append(average)
-    pieces[random_count_of_alternate - 1] += remainder
+    pieces[-1] += remainder
 
     # Генерация случайных флуктуаций
     remainder = 0
@@ -41,7 +39,9 @@ def generate_regex(n: int) -> str:
         else:
             pieces[i] -= fluct
             remainder += fluct
-    pieces[random_count_of_alternate - 1] += remainder
+    pieces[-1] += remainder
+
+    print(pieces)
 
     regex_alternate_list = []
 
@@ -196,6 +196,7 @@ def generate_labyrinth() -> DFA:
         # Детерминизация
         init_dfa = init_dfa.from_nfa(target_nfa=init_nfa)
 
+        # Добавление переходов в себя для состояний, из которых меньше двух переходов
         new_transitions = add_loops(init_dfa.states, init_dfa.transitions)
         init_dfa = DFA(
             states=init_dfa.states,
@@ -209,9 +210,6 @@ def generate_labyrinth() -> DFA:
         # Избавление от нетупиковых финальных состояний, которые могли появиться
         new_final_states = remove_not_dead_end(init_dfa.final_states, init_dfa.transitions)
 
-        # Добавление переходов в себя для состояний, из которых переход только по одному символу
-        new_transitions = add_loops(init_dfa.states, init_dfa.transitions)
-
         # Создание итогового лабиринта
         labyrinth = DFA(
             states=init_dfa.states,
@@ -221,16 +219,15 @@ def generate_labyrinth() -> DFA:
             final_states=new_final_states,
             allow_partial=False
         )
-        #.minify()
 
         if len(labyrinth.states) > limit:
-            print("Перегенерация лабиринта...")
+            print('Перегенерация лабиринта...')
             continue
         if len(new_final_states) != 0:
             break
 
     print(f'Регулярка: {regex}')
 
-    print(f"Начальное количество состояний:{len(labyrinth.states)}")
+    print(f'Начальное количество состояний: {len(labyrinth.states)}')
 
     return labyrinth
