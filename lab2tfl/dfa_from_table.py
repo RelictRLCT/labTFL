@@ -1,6 +1,7 @@
 from automata.fa.dfa import DFA
 from show import show
 
+
 def make_dfa_from_table(main_prefixes, extended_prefixes, suffixes, table) -> DFA:
     # # Основная часть таблицы
     # main_prefixes = ['ε', 'R', 'L', 'RL', 'RR']
@@ -12,136 +13,118 @@ def make_dfa_from_table(main_prefixes, extended_prefixes, suffixes, table) -> DF
     #
     # # Таблица признаков
     # table = {
-    #     ('ε', 'ε'): '-',
-    #     ('ε', 'L'): '-',
-    #     ('ε', 'RL'): '-',
-    #     ('ε', 'LRL'): '+',
+    #     ('ε', 'ε'): '0',
+    #     ('ε', 'L'): '0',
+    #     ('ε', 'RL'): '0',
+    #     ('ε', 'LRL'): '1',
     #
-    #     ('R', 'ε'): '+',
-    #     ('R', 'L'): '-',
-    #     ('R', 'RL'): '-',
-    #     ('R', 'LRL'): '-',
+    #     ('R', 'ε'): '1',
+    #     ('R', 'L'): '0',
+    #     ('R', 'RL'): '0',
+    #     ('R', 'LRL'): '0',
     #
-    #     ('L', 'ε'): '-',
-    #     ('L', 'L'): '-',
-    #     ('L', 'RL'): '+',
-    #     ('L', 'LRL'): '-',
+    #     ('L', 'ε'): '0',
+    #     ('L', 'L'): '0',
+    #     ('L', 'RL'): '1',
+    #     ('L', 'LRL'): '0',
     #
-    #     ('RL', 'ε'): '-',
-    #     ('RL', 'L'): '+',
-    #     ('RL', 'RL'): '-',
-    #     ('RL', 'LRL'): '-',
+    #     ('RL', 'ε'): '0',
+    #     ('RL', 'L'): '1',
+    #     ('RL', 'RL'): '0',
+    #     ('RL', 'LRL'): '0',
     #
-    #     ('RR', 'ε'): '-',
-    #     ('RR', 'L'): '-',
-    #     ('RR', 'RL'): '-',
-    #     ('RR', 'LRL'): '-',
+    #     ('RR', 'ε'): '0',
+    #     ('RR', 'L'): '0',
+    #     ('RR', 'RL'): '0',
+    #     ('RR', 'LRL'): '0',
     #
-    #     ('LL', 'ε'): '-',
-    #     ('LL', 'L'): '-',
-    #     ('LL', 'RL'): '-',
-    #     ('LL', 'LRL'): '+',
+    #     ('LL', 'ε'): '0',
+    #     ('LL', 'L'): '0',
+    #     ('LL', 'RL'): '0',
+    #     ('LL', 'LRL'): '1',
     #
-    #     ('LR', 'ε'): '-',
-    #     ('LR', 'L'): '+',
-    #     ('LR', 'RL'): '-',
-    #     ('LR', 'LRL'): '-',
+    #     ('LR', 'ε'): '0',
+    #     ('LR', 'L'): '1',
+    #     ('LR', 'RL'): '0',
+    #     ('LR', 'LRL'): '0',
     #
-    #     ('RLL', 'ε'): '+',
-    #     ('RLL', 'L'): '-',
-    #     ('RLL', 'RL'): '-',
-    #     ('RLL', 'LRL'): '-',
+    #     ('RLL', 'ε'): '1',
+    #     ('RLL', 'L'): '0',
+    #     ('RLL', 'RL'): '0',
+    #     ('RLL', 'LRL'): '0',
     #
-    #     ('RLR', 'ε'): '-',
-    #     ('RLR', 'L'): '-',
-    #     ('RLR', 'RL'): '-',
-    #     ('RLR', 'LRL'): '-',
+    #     ('RLR', 'ε'): '0',
+    #     ('RLR', 'L'): '0',
+    #     ('RLR', 'RL'): '0',
+    #     ('RLR', 'LRL'): '0',
     #
-    #     ('RRL', 'ε'): '-',
-    #     ('RRL', 'L'): '-',
-    #     ('RRL', 'RL'): '-',
-    #     ('RRL', 'LRL'): '-',
+    #     ('RRL', 'ε'): '0',
+    #     ('RRL', 'L'): '0',
+    #     ('RRL', 'RL'): '0',
+    #     ('RRL', 'LRL'): '0',
     #
-    #     ('RRR', 'ε'): '-',
-    #     ('RRR', 'L'): '-',
-    #     ('RRR', 'RL'): '-',
-    #     ('RRR', 'LRL'): '-',
+    #     ('RRR', 'ε'): '0',
+    #     ('RRR', 'L'): '0',
+    #     ('RRR', 'RL'): '0',
+    #     ('RRR', 'LRL'): '0',
     # }
 
-    # Все префиксы
+
     prefixes = main_prefixes + extended_prefixes
 
-    # Функция для получения строки таблицы для префикса
     def get_table_string(prefix):
-        return ''.join([table.get((prefix, suffix), '-') for suffix in suffixes])
+        return ''.join([table.get((prefix, suffix), '0') for suffix in suffixes])
 
-    # Определение эквивалентных классов по основной части таблицы
-    main_strings = {}
-    for prefix in main_prefixes:
+    # Определение эквивалентных классов по всем префиксам
+    all_strings = {}
+    for prefix in prefixes:
         table_string = get_table_string(prefix)
-        main_strings[prefix] = table_string
+        all_strings[prefix] = table_string
 
     # Соответствие строк и состояний
     table_string_to_state = {}
-    for idx, (prefix, table_string) in enumerate(main_strings.items()):
-        state_name = f'q{idx}'
+    state_counter = 0
+    for table_string in set(all_strings.values()):
+        state_name = f'q{state_counter}'
         table_string_to_state[table_string] = state_name
+        state_counter += 1
 
     # Соответствие префиксов и состояний
     prefix_to_state = {}
     for prefix in prefixes:
-        table_string = get_table_string(prefix)
-        # Ищем эквивалентный класс в основной части
-        if table_string in table_string_to_state:
-            state = table_string_to_state[table_string]
-        else:
-            # Если не найдено, создается ошибочное состояние (не должно происходить)
-            state = 'ERROR'
+        table_string = all_strings[prefix]
+        state = table_string_to_state[table_string]
         prefix_to_state[prefix] = state
 
     # Построение переходов
     transitions = {}
-    # Обработка состояний, соответствующих префиксам из основной части
-    for prefix in main_prefixes:
+    for prefix in prefixes:
         current_state = prefix_to_state[prefix]
         transitions.setdefault(current_state, {})
         for symbol in ['L', 'R']:
             new_prefix = ('' if prefix == 'ε' else prefix) + symbol
-            # Проверка, присутствует ли новый префикс в списке префиксов
             if new_prefix in prefixes:
-                # Получение строки таблицы нового префикса
-                new_features = get_table_string(new_prefix)
-                # Поиск соответствующего состояния по строке
-                if new_features in table_string_to_state:
-                    next_state = table_string_to_state[new_features]
-                else:
-                    next_state = 'ERROR'
+                next_state = prefix_to_state[new_prefix]
+                transitions[current_state][symbol] = next_state
             else:
-                next_state = 'ERROR'
-            transitions[current_state][symbol] = next_state
-
-    if 'ERROR' in prefix_to_state.values():
-        transitions['ERROR'] = {'L': 'ERROR', 'R': 'ERROR'}
+                # Переход остаётся не определённым (partial DFA)
+                pass
 
     # Определение начального и конечных состояний
     initial_state = prefix_to_state['ε']
     final_states = set()
-    for prefix in main_prefixes:
-        if table.get((prefix, 'ε'), '-') == '+':
+    for prefix in prefixes:
+        if table.get((prefix, 'ε'), '0') == '1':
             final_states.add(prefix_to_state[prefix])
 
+    # Создание DFA
     dfa = DFA(
         states=set(transitions.keys()),
         input_symbols={'L', 'R'},
         transitions=transitions,
         initial_state=initial_state,
         final_states=final_states,
-        allow_partial=False
+        allow_partial=True
     )
 
     return dfa
-
-
-if __name__ == "__main__":
-    dfa123 = make_dfa_from_table('sdf')
-    show(dfa123)

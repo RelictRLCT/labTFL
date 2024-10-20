@@ -3,7 +3,7 @@ from app import app
 from lab2tfl.dfa_from_table import make_dfa_from_table
 from member_equal import membership, equal_labyrinths
 from automata.fa.dfa import DFA
-
+from show import show
 
 labyrinth: DFA
 
@@ -32,7 +32,7 @@ def process_table(main_prefixes_raw: str, extended_prefixes_raw: str, suffixes_r
 
     # Удаляем пробелы из строки таблицы
     table_values = list(table_str.replace(' ', ''))
-
+    print(table_values)
     # Убедимся, что количество значений в table_values соответствует количеству комбинаций
     total_combinations = len(prefixes) * len(suffixes)
     if len(table_values) < total_combinations:
@@ -49,6 +49,7 @@ def process_table(main_prefixes_raw: str, extended_prefixes_raw: str, suffixes_r
             table[(prefix, suffix)] = value
 
     print(main_prefixes, extended_prefixes, suffixes, table)
+
     return make_dfa_from_table(main_prefixes, extended_prefixes, suffixes, table)
 
     # Здесь вы можете продолжить логику с использованием main_prefixes, extended_prefixes, suffixes и table
@@ -85,6 +86,13 @@ def check_table():
     table_str = data.get('table', '')
 
     user_dfa = process_table(main_prefixes_raw, extended_prefixes_raw, suffixes_raw, table_str)
+
     resp = equal_labyrinths(labyrinth, user_dfa)
+
+    show(user_dfa, 'user_labyrinth.png')
+
+    if resp == 'true':
+        show(user_dfa, 'user_labyrinth.png')
+
     print(f'ОТВЕТ {resp}')
     return jsonify({'response': resp}), 200

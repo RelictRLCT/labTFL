@@ -3,15 +3,19 @@ from show import show
 from dfa_from_table import make_dfa_from_table
 
 
-def equal_labyrinths(labyrinth: DFA, learner_dfa: DFA | str) -> str:
-    if learner_dfa is str:
-        learner_dfa = make_dfa_from_table(learner_dfa)
+def equal_labyrinths(labyrinth: DFA, learner_dfa: DFA) -> str:
 
     dfa = labyrinth.symmetric_difference(learner_dfa)
 
     if dfa.isempty():
         return 'true'
     else:
+        # dfa = labyrinth.intersection(learner_dfa.complement())
+        dfa = labyrinth.difference(learner_dfa)
+        if dfa.isempty():
+            print("ТРЕВОГА!!!")
+            return 'true'
+        show(dfa, 'intersect.png')
         k = 0
         while True:
             try:
