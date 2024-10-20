@@ -1,7 +1,7 @@
 from automata.fa.dfa import DFA
 from show import show
 
-def make_dfa_from_table(input_dfa: str) -> DFA:
+def make_dfa_from_table(main_prefixes, extended_prefixes, suffixes, table) -> DFA:
     # # Основная часть таблицы
     # main_prefixes = ['ε', 'R', 'L', 'RL', 'RR']
     # # Расширенная часть таблицы
@@ -68,23 +68,8 @@ def make_dfa_from_table(input_dfa: str) -> DFA:
     #     ('RRR', 'LRL'): '-',
     # }
 
-    # Основная часть таблицы
-    main_prefixes = ['ε', 'R']
-    # Расширенная часть таблицы
-    extended_prefixes = ['L', 'RL', 'RR']
     # Все префиксы
     prefixes = main_prefixes + extended_prefixes
-    suffixes = ['ε']
-
-    # Таблица признаков
-    table = {
-        ('ε', 'ε'): '-',
-        ('R', 'ε'): '+',
-        ('L', 'ε'): '-',
-        ('RL', 'ε'): '-',
-        ('RR', 'ε'): '-',
-
-    }
 
     # Функция для получения строки таблицы для префикса
     def get_table_string(prefix):

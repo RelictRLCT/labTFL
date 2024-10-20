@@ -3,14 +3,14 @@ from show import show
 from dfa_from_table import make_dfa_from_table
 
 
-def equal_labyrinths(labyrinth: DFA, learner_dfa: DFA | str) -> bool | str:
+def equal_labyrinths(labyrinth: DFA, learner_dfa: DFA | str) -> str:
     if learner_dfa is str:
         learner_dfa = make_dfa_from_table(learner_dfa)
 
     dfa = labyrinth.symmetric_difference(learner_dfa)
 
     if dfa.isempty():
-        return True
+        return 'true'
     else:
         k = 0
         while True:
