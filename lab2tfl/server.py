@@ -52,8 +52,6 @@ def process_table(main_prefixes_raw: str, extended_prefixes_raw: str, suffixes_r
 
     return make_dfa_from_table(main_prefixes, extended_prefixes, suffixes, table)
 
-    # Здесь вы можете продолжить логику с использованием main_prefixes, extended_prefixes, suffixes и table
-
 
 # Функция для установки лабиринта из main.py
 def set_labyrinth(new_labyrinth):

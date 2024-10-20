@@ -1,5 +1,4 @@
 from automata.fa.dfa import DFA
-from show import show
 
 
 def make_dfa_from_table(main_prefixes, extended_prefixes, suffixes, table) -> DFA:

@@ -1,6 +1,5 @@
 from automata.fa.dfa import DFA
 from show import show
-from dfa_from_table import make_dfa_from_table
 
 
 def equal_labyrinths(labyrinth: DFA, learner_dfa: DFA) -> str:
@@ -62,6 +61,3 @@ if __name__ == "__main__":
     show(dfa2)
 
     print(equal_labyrinths(dfa1, dfa2))
-
-    # Надо будет взять симметрическую разность двух автоматов, и, если язык полученного автомата пустой,
-    # то автоматы эквивалентны. Иначе вернуть случайное слово из автомата симметрической разности
