@@ -2,14 +2,9 @@ import random
 from typing import Mapping, Any, AbstractSet
 from automata.fa.dfa import DFA
 from automata.fa.nfa import NFA
-from show import show
+from planarity import check_planarity, make_planar
 
-# Буду строить НКА с помощью случайной регулярки, потом перевод в ДКА и минимизация
-# Длина регулярки должна быть примерно log(N) по основанию 2, где N - оценка сверху числа состояний (худший случай -
-# экспоненциальный рост при переводе НКА в ДКА (перевод регулярки в НКА примерно O(n) от длины регулярки)
-#
-# Обновлено: на реальных данных и алфавите из 2 символов зависимость +- линейная, поэтому длину регулярки буду
-# использовать равную ограничению из файла, а потом, в случае превышения, удалю случайные состояния
+
 def generate_regex(n: int) -> str:
     limit = n
 
@@ -40,8 +35,6 @@ def generate_regex(n: int) -> str:
             pieces[i] -= fluct
             remainder += fluct
     pieces[-1] += remainder
-
-    print(pieces)
 
     regex_alternate_list = []
 
@@ -138,6 +131,7 @@ def generate_regex(n: int) -> str:
         regex += reg + '|'
     regex = regex[:len(regex) - 1]
 
+    #return '(L)+RL*L?LR|(RR+)R*R*RL|LR?RR|L*RR|R+LLL|LRR|RRR+RL|((L))???RL|R(((L)))???RL|R*(L)+LR|(L(L)**L)+LL|L?L+LL|L?RLR|LLR|R*L?RL|LRR|((L))**LR|L+LLL|R?RR|LL*L+RL|LRRL|(R)*R*LR|LR*(R)LR|R?L+RR?R?L+(L?L?(LR+((((L)R*(L)*L?(R(R)))*+RR)?((L))?)LL+R)?R*(L)?+(R*RL((R)+))?+*)LLR'
     return regex
 
 # Функция для удаления финальных состояний, которые не являются тупиковыми.
@@ -167,22 +161,25 @@ def add_loops(states: AbstractSet, transitions: Mapping[str, Mapping[str, Any]])
             new_transitions[state] = {'L': state, 'R': state}
     return new_transitions
 
-def generate_labyrinth() -> DFA:
-    init_dfa = DFA(
-        states={'q0'},
-        input_symbols={'1'},
-        transitions={'q0': {'1': 'q0'}},
-        initial_state='q0',
-        final_states={'q0'}
+
+def trap_on_final(dfa: DFA) -> DFA:
+    new_states = set(dfa.states)
+    new_states.add('TRAP')
+    new_transitions = dict(dfa.transitions)
+    new_transitions['TRAP'] = {'L': 'TRAP', 'R': 'TRAP'}
+    for fin in dfa.final_states:
+        new_transitions[fin] = {'L': 'TRAP', 'R': 'TRAP'}
+
+    return DFA(
+        states=new_states,
+        input_symbols=dfa.input_symbols,
+        transitions=new_transitions,
+        initial_state=dfa.initial_state,
+        final_states=dfa.final_states
     )
 
-    init_nfa = NFA(
-        states={'q0'},
-        input_symbols={'1'},
-        transitions={'q0': {'1': {'q0'}}},
-        initial_state='q0',
-        final_states={'q0'}
-    )
+
+def generate_labyrinth(plan: str) -> DFA:
 
     file = open('../parameters.txt', 'r')
     limit = int(file.readline())
@@ -191,13 +188,14 @@ def generate_labyrinth() -> DFA:
     while True:
         # Генерация регулярки и НКА по ней
         regex = generate_regex(limit)
-        init_nfa = init_nfa.from_regex(regex=regex, input_symbols={'L', 'R'})
+        init_nfa = NFA.from_regex(regex=regex, input_symbols={'L', 'R'})
 
         # Детерминизация
-        init_dfa = init_dfa.from_nfa(target_nfa=init_nfa)
+        init_dfa = DFA.from_nfa(target_nfa=init_nfa)
 
         # Добавление переходов в себя для состояний, из которых меньше двух переходов
         new_transitions = add_loops(init_dfa.states, init_dfa.transitions)
+
         init_dfa = DFA(
             states=init_dfa.states,
             input_symbols=init_dfa.input_symbols,
@@ -219,6 +217,13 @@ def generate_labyrinth() -> DFA:
             final_states=new_final_states,
             allow_partial=False
         )
+
+        # Добавление ловушки из финальных состояний
+        labyrinth = trap_on_final(labyrinth).minify()
+
+        if plan != 'No':
+            while not check_planarity(labyrinth)[0]:
+                labyrinth = make_planar(labyrinth).minify()
 
         if len(labyrinth.states) > limit:
             print('Перегенерация лабиринта...')
