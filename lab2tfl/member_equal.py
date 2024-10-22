@@ -31,4 +31,6 @@ def membership(labyrinth: DFA, word: str) -> bool:
     if len(word) > 0:
         if word[0] == 'ε':
             word = word[1:]
+        elif word[-1] == 'ε':
+            word = word[:-1]
     return labyrinth.accepts_input(word)
