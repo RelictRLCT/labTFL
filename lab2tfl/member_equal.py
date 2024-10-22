@@ -28,7 +28,7 @@ def equal_labyrinths(labyrinth: DFA, learner_dfa: DFA) -> (str, bool):
 
 
 def membership(labyrinth: DFA, word: str) -> bool:
-    if len(word) > 1:
+    if len(word) > 0:
         if word[0] == 'ε':
             word = word[1:]
     return labyrinth.accepts_input(word)
