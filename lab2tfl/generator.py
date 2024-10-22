@@ -179,10 +179,26 @@ def trap_on_final(dfa: DFA) -> DFA:
     )
 
 
+def process_max_exits(dfa: DFA, max_f: int) -> DFA:
+    new_fin_states = set(dfa.final_states)
+    count_final = len(new_fin_states)
+    while count_final > max_f:
+        new_fin_states.remove(random.choice(tuple(new_fin_states)))
+        count_final = len(new_fin_states)
+    return DFA(
+        states=dfa.states,
+        input_symbols=dfa.input_symbols,
+        transitions=dfa.transitions,
+        initial_state=dfa.initial_state,
+        final_states=new_fin_states
+    )
+
+
 def generate_labyrinth(plan: str) -> DFA:
 
     file = open('../parameters.txt', 'r')
     limit = int(file.readline())
+    max_exits = int(file.readline())
     file.close()
 
     while True:
@@ -220,6 +236,9 @@ def generate_labyrinth(plan: str) -> DFA:
 
         # Добавление ловушки из финальных состояний
         labyrinth = trap_on_final(labyrinth).minify()
+
+        # Обработка максимального числа состояний из файла
+        labyrinth = process_max_exits(labyrinth, max_exits).minify()
 
         if plan != 'No':
             while not check_planarity(labyrinth)[0]:

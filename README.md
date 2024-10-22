@@ -18,7 +18,7 @@
 перегенерация лабиринта.
 
 ## Установка и запуск
-- Необходимо установить нужные библиотеки из файла requirements.txt:
+- Необходимо установить нужные библиотеки из файла `requirements.txt`:
 ```bash
 pip install -r requirements.txt
 ```
@@ -49,7 +49,7 @@ HTTP-POST запросов.
 
 ```json
 {
-  "word": "LLRLR"
+    "word": "LLRLR"
 }
 ```
 В ответ вернётся JSON

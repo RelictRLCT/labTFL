@@ -2,23 +2,27 @@ from automata.fa.dfa import DFA
 from show import show
 
 
-def equal_labyrinths(labyrinth: DFA, learner_dfa: DFA) -> str:
+def equal_labyrinths(labyrinth: DFA, learner_dfa: DFA) -> (str, bool):
 
     dfa = labyrinth.symmetric_difference(learner_dfa)
 
     if dfa.isempty():
-        return 'true'
+        # Эквивалентны
+        return None, None
     else:
-        # dfa = labyrinth.intersection(learner_dfa.complement())
         dfa = labyrinth.difference(learner_dfa)
         if dfa.isempty():
-            print("ТРЕВОГА!!!")
-            return 'true'
-        show(dfa, 'intersect.png')
+            k = 0
+            while True:
+                try:
+                    return dfa.random_word(k), False
+                except ValueError:
+                    k += 1
+
         k = 0
         while True:
             try:
-                return dfa.random_word(k)
+                return dfa.random_word(k), True
             except ValueError:
                 k += 1
 

@@ -70,9 +70,9 @@ def check_word():
 
     # Проверка, принадлежит ли слово языку
     if membership(labyrinth, word):
-        return jsonify({'response': '1'}), 200
+        return jsonify({'response': True}), 200
     else:
-        return jsonify({'response': '0'}), 200
+        return jsonify({'response': False}), 200
 
 
 @app.route('/checkTable', methods=['POST'])
@@ -85,12 +85,13 @@ def check_table():
 
     user_dfa = process_table(main_prefixes_raw, extended_prefixes_raw, suffixes_raw, table_str)
 
-    resp = equal_labyrinths(labyrinth, user_dfa)
+    resp, type_field = equal_labyrinths(labyrinth, user_dfa)
 
     show(user_dfa, 'user_labyrinth.png')
 
-    if resp == 'true':
+    if resp is None:
         show(user_dfa, 'user_labyrinth.png')
+        return jsonify({'type': None, 'response': None}), 200
 
     print(f'ОТВЕТ {resp}')
-    return jsonify({'response': resp}), 200
+    return jsonify({'type': type_field, 'response': resp}), 200
