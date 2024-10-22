@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from app import app
-from lab2tfl.dfa_from_table import make_dfa_from_table
+from dfa_from_table import make_dfa_from_table
 from member_equal import membership, equal_labyrinths
 from automata.fa.dfa import DFA
 from show import show
