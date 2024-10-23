@@ -56,8 +56,7 @@ def make_dfa_from_table(main_prefixes, extended_prefixes, suffixes, table) -> DF
         input_symbols={'L', 'R'},
         transitions=transitions,
         initial_state=initial_state,
-        final_states=final_states,
-        allow_partial=True
+        final_states=final_states
     )
 
     return dfa

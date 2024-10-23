@@ -12,6 +12,8 @@ def equal_labyrinths(labyrinth: DFA, learner_dfa: DFA) -> (str, bool):
     else:
         dfa = labyrinth.difference(learner_dfa)
         if dfa.isempty():
+            print("Язык лабиринта полностью в языке пользователя!")
+            dfa = learner_dfa.difference(labyrinth)
             k = 0
             while True:
                 try:
