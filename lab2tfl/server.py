@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from app import app
 from dfa_from_table import make_dfa_from_table
+from make_video import give_me_video
 from member_equal import membership, equal_labyrinths
 from automata.fa.dfa import DFA
 from show import show
@@ -87,11 +88,15 @@ def check_table():
 
     resp, type_field = equal_labyrinths(labyrinth, user_dfa)
 
-    show(user_dfa, 'user_labyrinth.png')
+    show(user_dfa, True)
 
     if resp is None:
-        show(user_dfa, 'user_labyrinth.png')
-        print('Лабиринт угадан!')
+        show(user_dfa, True) # Удачная попытка будет 2 секунды
+
+        give_me_video()
+
+        print('Лабиринт угадан! Видео сохранено в папку videos')
+
         return jsonify({'type': None, 'response': None}), 200
 
     print(f'ОТВЕТ {resp}')
