@@ -198,6 +198,65 @@ def generate_labyrinth(plan: str) -> DFA:
     max_exits = int(file.readline())
     file.close()
 
+    if limit <= 1:
+        print("Длину лабиринта проверь-ка")
+        raise ValueError
+
+    match limit:
+        case 2:
+            return DFA(
+                states={'0', '1'},
+                input_symbols={'L', 'R'},
+                transitions={
+                            '0': {'L': '1', 'R': '1'},
+                            '1': {'L': '1', 'R': '1'}
+                },
+                initial_state='0',
+                final_states={'0'},
+                allow_partial=False
+            )
+        case 3:
+            dfas = [
+                DFA(
+                    states={'0', '1', '2'},
+                    input_symbols={'L', 'R'},
+                    transitions={
+                                '0': {'L': '0', 'R': '1'},
+                                '1': {'L': '2', 'R': '2'},
+                                '2': {'L': '2', 'R': '2'}
+                    },
+                    initial_state='0',
+                    final_states={'1'},
+                    allow_partial=False
+                ),
+                DFA(
+                    states={'0', '1', '2'},
+                    input_symbols={'L', 'R'},
+                    transitions={
+                        '0': {'L': '1', 'R': '0'},
+                        '1': {'L': '2', 'R': '2'},
+                        '2': {'L': '2', 'R': '2'}
+                    },
+                    initial_state='0',
+                    final_states={'1'},
+                    allow_partial=False
+                ),
+                DFA(
+                    states={'0', '1', '2'},
+                    input_symbols={'L', 'R'},
+                    transitions={
+                        '0': {'L': '1', 'R': '1'},
+                        '1': {'L': '2', 'R': '2'},
+                        '2': {'L': '2', 'R': '2'}
+                    },
+                    initial_state='0',
+                    final_states={'1'},
+                    allow_partial=False
+                ),
+            ]
+            return dfas[random.randint(0, 2)]
+
+
     while True:
         # Генерация регулярки и НКА по ней
         regex = generate_regex(limit)
