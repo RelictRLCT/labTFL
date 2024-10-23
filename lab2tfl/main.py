@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     labyrinth = generate_labyrinth(plan=args.p)
 
-    print(f"Итоговое количество состояний: {len(labyrinth.states)}")
+    print(f"Количество состояний: {len(labyrinth.states)}")
     check_planarity(labyrinth)
     show(labyrinth)
 

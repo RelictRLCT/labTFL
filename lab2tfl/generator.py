@@ -306,8 +306,4 @@ def generate_labyrinth(plan: str) -> DFA:
         if len(labyrinth.final_states) != 0:
             break
 
-    print(f'Регулярка: {regex}')
-
-    print(f'Начальное количество состояний: {len(labyrinth.states)}')
-
     return labyrinth
