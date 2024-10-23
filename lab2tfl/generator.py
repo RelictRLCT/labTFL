@@ -131,12 +131,9 @@ def generate_regex(n: int) -> str:
         regex += reg + '|'
     regex = regex[:len(regex) - 1]
 
-    #return '(L)+RL*L?LR|(RR+)R*R*RL|LR?RR|L*RR|R+LLL|LRR|RRR+RL|((L))???RL|R(((L)))???RL|R*(L)+LR|(L(L)**L)+LL|L?L+LL|L?RLR|LLR|R*L?RL|LRR|((L))**LR|L+LLL|R?RR|LL*L+RL|LRRL|(R)*R*LR|LR*(R)LR|R?L+RR?R?L+(L?L?(LR+((((L)R*(L)*L?(R(R)))*+RR)?((L))?)LL+R)?R*(L)?+(R*RL((R)+))?+*)LLR'
     return regex
 
 # Функция для удаления финальных состояний, которые не являются тупиковыми.
-# Если тупиками не считаются вершины, у которых цикл на себе, а дальше переходов нет,
-# то надо будет изменить
 def remove_not_dead_end(finals: AbstractSet, transitions: Mapping[Any, Mapping[str, Any]]) -> AbstractSet:
     new_finals = set()
     for fin in finals:

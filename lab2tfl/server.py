@@ -31,16 +31,16 @@ def process_table(main_prefixes_raw: str, extended_prefixes_raw: str, suffixes_r
 
     prefixes = main_prefixes + extended_prefixes
 
-    # Удаляем пробелы из строки таблицы
+    # Удаление пробелов из строки таблицы
     table_values = list(table_str.replace(' ', ''))
     print(table_values)
-    # Убедимся, что количество значений в table_values соответствует количеству комбинаций
+    # Проверка, что количество значений в table_values соответствует количеству комбинаций
     total_combinations = len(prefixes) * len(suffixes)
     if len(table_values) < total_combinations:
-        # Дополняем недостающие значения дефолтным '-'
-        table_values += ['-'] * (total_combinations - len(table_values))
+        # Дополнение недостающих значений дефолтным '0'
+        table_values += ['0'] * (total_combinations - len(table_values))
 
-    # Заполняем таблицу
+    # Заполнение таблицы
     table = {}
     idx = 0
     for prefix in prefixes:
@@ -62,7 +62,6 @@ def set_labyrinth(new_labyrinth):
 
 @app.route('/checkWord', methods=['POST'])
 def check_word():
-    # Извлечение данных из запроса
     data = request.get_json()
     word = data.get('word')
 

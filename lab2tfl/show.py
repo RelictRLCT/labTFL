@@ -1,6 +1,5 @@
 from automata.fa.dfa import DFA
 from automata.fa.nfa import NFA
-from matplotlib import pyplot as plt
 from typing import Union
 from pathlib import Path
 import os

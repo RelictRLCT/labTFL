@@ -21,7 +21,6 @@ def check_planarity(dfa: DFA) -> (bool, DFA):
     # Проверка планарности
     is_planar, _ = nx.check_planarity(G.to_undirected())
     if is_planar:
-        # save_graph_image(G.to_undirected(), '../images/original_graph.png')
         print("Лабиринт планарен")
         return True, None
     else:
@@ -78,7 +77,7 @@ def make_planar(dfa: DFA) -> DFA:
                 # Заменяем на петлю в исходной вершине с тем же символом
                 T.add_edge(u, u, symbol=data['symbol'])
 
-    # Убеждаемся, что все переходы из финальных состояний в ловушку присутствуют
+    # Дополнение переходами из финальных состояний в ловушку
     for u, v, symbol in final_to_trap_edges:
         if not T.has_edge(u, v):
             T.add_edge(u, v, symbol=symbol)
@@ -93,29 +92,28 @@ def make_planar(dfa: DFA) -> DFA:
     else:
         all_states = sorted(dfa.states)
 
-    # Проходим по всем состояниям и символам входного алфавита
+    # Проход по всем состояниям и символам входного алфавита
     for state in all_states:
         for symbol in sorted(dfa.input_symbols):
             if state in dfa.transitions and symbol in dfa.transitions[state]:
                 next_state = dfa.transitions[state][symbol]
-                # Проверяем, есть ли соответствующее ребро в модифицированном графе
+                # Проверка, есть ли соответствующее ребро в модифицированном графе
                 if T.has_edge(state, next_state) or (state == next_state and T.has_edge(state, state)):
                     new_transitions.setdefault(state, {})[symbol] = next_state
                 else:
-                    # Ребро удалено, заменяем на петлю
+                    # Ребро удалено, заменяем на цикл
                     new_transitions.setdefault(state, {})[symbol] = state
             else:
-                # Добавляем петлю для отсутствующих переходов
+                # Добавление петли для отсутствующих переходов
                 new_transitions.setdefault(state, {})[symbol] = state
 
-    # Убеждаемся, что переходы из финальных состояний в ловушку сохранены
+    # Проверка, что переходы из финальных состояний в ловушку сохранены
     for state in dfa.final_states:
         for symbol in sorted(dfa.input_symbols):
             next_state = dfa.transitions.get(state, {}).get(symbol)
             if next_state == trap_state:
                 new_transitions[state][symbol] = trap_state
 
-    # Создаем новый ДКА с обновленными переходами
     new_dfa = DFA(
         states=set(new_transitions.keys()),
         input_symbols=dfa.input_symbols,

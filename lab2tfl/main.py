@@ -11,7 +11,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Генератор планарного лабиринта')
     parser.add_argument('-p', type=str, default='No', help='Выполнить планаризацию (-p yes)')
     args = parser.parse_args()
-    print(f'Аргументы: {args.p}')
 
     labyrinth = generate_labyrinth(plan=args.p)
 
