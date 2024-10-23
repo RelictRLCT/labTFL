@@ -45,7 +45,7 @@ python3 main.py [-p yes]
 HTTP-POST запросов.
 
 ## Формат приёма данных
-- Запрос "membership" - POST на `/checkWord` в виде JSONа:
+- Запрос `"membership"` - POST на `/checkWord` в виде JSONа:
 
 ```json
 {
@@ -66,7 +66,7 @@ HTTP-POST запросов.
 ```
 (если не принадлежит).
 
-- Запрос "equivalence" - POST на `/checkTable` в виде JSONа:
+- Запрос `"equivalence"` - POST на `/checkTable` в виде JSONа:
 
 ```json
 {
