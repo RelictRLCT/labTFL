@@ -247,7 +247,7 @@ def generate_labyrinth(plan: str) -> DFA:
         if len(labyrinth.states) > limit:
             print('Перегенерация лабиринта...')
             continue
-        if len(new_final_states) != 0:
+        if len(labyrinth.final_states) != 0:
             break
 
     print(f'Регулярка: {regex}')

@@ -91,6 +91,7 @@ def check_table():
 
     if resp is None:
         show(user_dfa, 'user_labyrinth.png')
+        print('Лабиринт угадан!')
         return jsonify({'type': None, 'response': None}), 200
 
     print(f'ОТВЕТ {resp}')
