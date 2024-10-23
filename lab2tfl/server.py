@@ -33,7 +33,7 @@ def process_table(main_prefixes_raw: str, extended_prefixes_raw: str, suffixes_r
 
     # Удаление пробелов из строки таблицы
     table_values = list(table_str.replace(' ', ''))
-    print(table_values)
+    ### print(table_values)
     # Проверка, что количество значений в table_values соответствует количеству комбинаций
     total_combinations = len(prefixes) * len(suffixes)
     if len(table_values) < total_combinations:
@@ -49,7 +49,7 @@ def process_table(main_prefixes_raw: str, extended_prefixes_raw: str, suffixes_r
             idx += 1
             table[(prefix, suffix)] = value
 
-    print(main_prefixes, extended_prefixes, suffixes, table)
+    ### print(main_prefixes, extended_prefixes, suffixes, table)
 
     return make_dfa_from_table(main_prefixes, extended_prefixes, suffixes, table)
 
