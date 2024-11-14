@@ -26,6 +26,11 @@ pip install -r requirements.txt
 ```bash
 poetry install
 ```
+- Кроме того, необходимо установить пакет `graphviz`:
+```bash
+sudo apt install graphviz
+```
+или аналогичной командой на вашей системе.
 - Запуск программы производится из папки `lab2tfl` командой
 ```bash
 python3 main.py [-p yes]
