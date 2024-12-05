@@ -1,13 +1,15 @@
 from collections import defaultdict
 
 class CFG:
-    def __init__(self, rules: dict, start_symbol: str):
+    def __init__(self, rules: dict, start_symbol: str, terms: list[str], nterms: list[str]):
         """
         :param rules: Словарь, где ключи - нетерминалы, а значения - список продукций
         :param start_symbol: Стартовый символ
         """
         self.rules = rules
         self.start_symbol = start_symbol
+        self.terms = terms
+        self.nterms = nterms
 
     def remove_chain_rules(self):
         """
@@ -22,12 +24,12 @@ class CFG:
         changed = True
         # Проходы до тех пор, пока множества цепных нетерминалов не перестанут изменяться
         while changed:
-            #print(chain_sets)
+            # print(chain_sets)
             changed = False
             for nt in self.rules:
                 for prod in self.rules[nt]:
                     # Если продукция - цепное правило (один нетерминал)
-                    if len(prod) == 1 and prod[0].isupper(): #TODO: потом надо будет заменить на нормальную проверку
+                    if len(prod) == 1 and prod[0] in self.nterms:
                         symbol = prod[0]
                         before = len(chain_sets[nt])
                         # Добавление к множеству нетерминалов нетерминалов, достижимых из symbol
@@ -43,10 +45,11 @@ class CFG:
                 for prod in self.rules[chain_nt]:
                     # Исключение цепных правил (добавление в исходный нетерминал продукций,
                     # получаемых из достижимых по цепным правилам нетерминалов)
-                    if len(prod) != 1 or not prod[0].isupper(): #TODO: потом надо будет заменить на нормальную проверку
+                    if len(prod) != 1 or prod[0] not in self.nterms:
                         if prod not in new_rules[nt]:
                             new_rules[nt].append(prod)
         self.rules = new_rules
+        self.nterms = list(self.rules.keys())
 
     def remove_useless_rules(self):
         """
@@ -64,7 +67,7 @@ class CFG:
                     continue  # Уже среди порождающих
                 for prod in self.rules[nt]:
                     # Если все символы в продукции - терминалы или порождающие нетерминалы
-                    if all(symbol.islower() or symbol in generating for symbol in prod): #TODO: потом надо будет заменить на нормальную проверку
+                    if all(symbol in self.terms or symbol in generating for symbol in prod):
                         generating.add(nt)
                         changed = True
                         break  # Сразу можно к следующему
@@ -75,10 +78,10 @@ class CFG:
         while changed:
             changed = False
             for nt in list(reachable):
-                for prod in self.rules[nt]:
+                for prod in self.rules.get(nt, []):
                     for symbol in prod:
                         # Если символ - нетерминал и еще не отмечен как достижимый
-                        if symbol.isupper() and symbol not in reachable: #TODO: потом надо будет заменить на нормальную проверку
+                        if symbol in self.nterms and symbol not in reachable:
                             reachable.add(symbol)
                             changed = True
 
@@ -88,9 +91,10 @@ class CFG:
         for nt in useful:
             for prod in self.rules[nt]:
                 # Проверка, что все символы продукции - полезные нетерминалы или терминалы
-                if all(symbol in useful or symbol.islower() for symbol in prod): #TODO: потом надо будет заменить на нормальную проверку
+                if all(symbol in useful or symbol in self.terms for symbol in prod):
                     new_rules[nt].append(prod)
         self.rules = new_rules
+        self.nterms = list(self.rules.keys())
 
     def reduce_long_rules(self):
         """
@@ -115,6 +119,8 @@ class CFG:
                             new_symbol_index += 1
                             new_rules[prev_symbol].append([a, new_nt])
                             prev_symbol = new_nt
+                            if new_nt not in self.nterms:
+                                self.nterms.append(new_nt)
                         else:
                             # Последние два символа
                             new_rules[prev_symbol].append([a, symbols[-1]])
@@ -130,25 +136,26 @@ class CFG:
 
         for nt in self.rules:
             for prod in self.rules[nt]:
-                if len(prod) == 1 and prod[0].islower(): #TODO: потом надо будет заменить на нормальную проверку
+                if len(prod) == 1 and prod[0] in self.terms:
                     new_rules[nt].append(prod)  # Один терминал - нормально
                 else:
                     new_prod = []
                     for symbol in prod:
-                        if symbol.islower(): #TODO: потом надо будет заменить на нормальную проверку
+                        if symbol in self.terms:
                             # Если терминал уже заменен на нетерминал
                             if symbol not in terminal_map:
                                 new_nt = f"G{new_symbol_index}"
                                 new_symbol_index += 1
                                 terminal_map[symbol] = new_nt
                                 new_rules[terminal_map[symbol]].append([symbol])  # Добавление правила G -> a
+                                if new_nt not in self.nterms:
+                                    self.nterms.append(new_nt)
                             new_prod.append(terminal_map[symbol])  # Замена терминала на нетерминал
                         else:
                             new_prod.append(symbol)
                     new_rules[nt].append(new_prod)
 
-        for nt in new_rules:
-            self.rules[nt] = new_rules[nt]
+        self.rules = new_rules
 
     def convert_to_cnf(self):
         """
@@ -158,6 +165,7 @@ class CFG:
         self.remove_useless_rules()
         self.reduce_long_rules()
         self.replace_terminals_in_rules()
+        self.remove_useless_rules() # ещё раз!
 
     def display(self):
         """
