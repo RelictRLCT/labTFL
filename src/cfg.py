@@ -167,6 +167,16 @@ class CFG:
         self.replace_terminals_in_rules()
         self.remove_useless_rules() # ещё раз!
 
+        # Стартовое правило в начало
+        if self.start_symbol in self.rules:
+            start_rules = self.rules.pop(self.start_symbol)
+            new_rules = defaultdict(list)
+            new_rules[self.start_symbol] = start_rules
+            for nt in self.nterms:
+                if nt != self.start_symbol and nt in self.rules:
+                    new_rules[nt].extend(self.rules[nt])
+            self.rules = new_rules
+
     def display(self):
         """
         Вывод грамматики

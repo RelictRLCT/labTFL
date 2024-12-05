@@ -1,38 +1,26 @@
 from src.cfg import CFG
+from src.parser.parse_file import parse_grammar
 
 
 def main():
-    # rules = {
-    #     "S": [["A", "B", "C"], ["B", "C"]],
-    #     "A": [["a", "B", "a"]],
-    #     "B": [["b"]],
-    #     "C": [["c"]],
-    #     "D": [["A", "D"]],  # Бесполезное
-    #     "E": [["A"]],       # Цепное
-    # }
+    with open("rules.txt", "r") as f:
+        file_content = f.read()
 
-    rules = {
-        "S": [["A", "B", "C", "D", "a"], ["B", "C", "C"], ["D"]],
-        "A": [["B"]],
-        "B": [["C"]],
-        "C": [["c"]],
-        "D": [["D"]]
-    }
+    rules, terms, nterms = parse_grammar(file_content)
+    if rules is None:
+        print("Ошибка в переданном файле")
+        return
 
-    terms = ["c"]
-    nterms = ["S", "A", "B", "C", "D"]
+    print("Терминалы:", terms)
+    print("Нетерминалы:", nterms)
 
-    start_symbol = "S"
-
-    cfg = CFG(rules, start_symbol, terms, nterms)
+    cfg = CFG(rules, nterms[0], terms, nterms)
     print("Исходная грамматика:")
     cfg.display()
-    print(cfg.nterms)
 
     cfg.convert_to_cnf()
     print("\nГрамматика в ХНФ:")
     cfg.display()
-    print(cfg.nterms)
 
 
 if __name__ == "__main__":
