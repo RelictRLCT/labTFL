@@ -1,5 +1,8 @@
+from time import sleep
+
 from src.bigram_matrix import build_bigram_matrix
 from src.cfg import CFG
+from src.generator.word_generator import generate_word
 from src.parser.parse_file import parse_grammar
 
 
@@ -38,6 +41,10 @@ def main():
 
     print("\nФинальные терминалы (Last(S)):")
     print(end_terminals)
+
+    while True:
+        print(generate_word(bigram_matrix, cfg.terms, start_terminals, end_terminals))
+        sleep(3)
 
 
 if __name__ == "__main__":
