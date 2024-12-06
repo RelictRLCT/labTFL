@@ -1,4 +1,4 @@
-def get_first_sets(rules, terms, nterms):
+def get_first_sets(rules: dict, terms: list[str], nterms: list[str]):
     first = {nt: set() for nt in nterms}
     changed = True
     while changed:
@@ -19,7 +19,8 @@ def get_first_sets(rules, terms, nterms):
                         changed = True
     return first
 
-def get_follow_sets(rules, terms, nterms, start_symbol, first):
+
+def get_follow_sets(rules: dict, terms: list[str], nterms: list[str], first):
     follow = {nt: set() for nt in nterms}
     changed = True
     while changed:
@@ -49,7 +50,8 @@ def get_follow_sets(rules, terms, nterms, start_symbol, first):
                                 changed = True
     return follow
 
-def get_last_sets(rules, terms, nterms):
+
+def get_last_sets(rules: dict, terms: list[str], nterms: list[str]):
     last = {nt: set() for nt in nterms}
     changed = True
     while changed:
@@ -70,7 +72,8 @@ def get_last_sets(rules, terms, nterms):
                         changed = True
     return last
 
-def get_precede_sets(rules, terms, nterms, last):
+
+def get_precede_sets(rules: dict, terms: list[str], nterms: list[str], last):
     precede = {nt: set() for nt in nterms}
     changed = True
     while changed:
@@ -94,9 +97,10 @@ def get_precede_sets(rules, terms, nterms, last):
                                 changed = True
     return precede
 
-def build_bigram_matrix(rules, terms, nterms, start_symbol):
+
+def build_bigram_matrix(rules: dict, terms: list[str], nterms: list[str], start_symbol):
     first = get_first_sets(rules, terms, nterms)
-    follow = get_follow_sets(rules, terms, nterms, start_symbol, first)
+    follow = get_follow_sets(rules, terms, nterms, first)
     last = get_last_sets(rules, terms, nterms)
     precede = get_precede_sets(rules, terms, nterms, last)
 

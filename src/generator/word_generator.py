@@ -10,8 +10,6 @@ def generate_word(
 ) -> str:
     current = random.choice(list(start_terminals))
     word = [current]
-    # Если не было случайных переходов или не завершались досрочно,
-    # то слово сразу принадлежит языку и можно не проверять в дальнейшем
 
     while True:
         if current in end_terminals:

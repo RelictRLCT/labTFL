@@ -1,4 +1,4 @@
-def parse_settings(file_path):
+def parse_settings(file_path: str):
     required_keys = {
         "probability_of_random_next_term",
         "probability_of_not_end_when_final_symbol_found",

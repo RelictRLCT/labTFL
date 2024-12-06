@@ -1,4 +1,4 @@
-def cyk(word, rules, start_symbol):
+def cyk(word: str, rules: dict, start_symbol: str) -> bool:
     n = len(word)
     P = [[set() for _ in range(n)] for _ in range(n)]
 
