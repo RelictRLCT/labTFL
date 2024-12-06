@@ -7,9 +7,12 @@ def generate_word(
         end_terminals: list[str],
         possibility_of_not_con=0.5,
         max_length=20
-):
+) -> (str, bool):
     current = random.choice(list(start_terminals))
     word = [current]
+    is_from_language = True
+    # Если не было случайных переходов или не завершались досрочно,
+    # то слово сразу принадлежит языку и можно не проверять в дальнейшем
 
     while True:
         if current in end_terminals:
@@ -27,10 +30,12 @@ def generate_word(
                 break
 
         if len(word) >= max_length:
+            is_from_language = False
             break
 
         # Возможность выбора случайного следующего терминала
         if random.random() < possibility_of_not_con:
+            is_from_language = False # уже непонятно, откуда слово
             next_term = random.choice(terms)
         else:
             possible_next = []
@@ -41,10 +46,11 @@ def generate_word(
             if not possible_next:
                 # Если вдруг нет вариантов
                 next_term = random.choice(terms)
+                is_from_language = False
             else:
                 next_term = random.choice(possible_next)
 
         word.append(next_term)
         current = next_term
 
-    return word
+    return word, is_from_language
