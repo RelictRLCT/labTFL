@@ -5,12 +5,10 @@ def generate_word(
         terms: list[str],
         start_terminals: list[str],
         end_terminals: list[str],
-        possibility_of_not_con=0.5,
-        max_length=20
-) -> (str, bool):
+        settings: dict
+) -> str:
     current = random.choice(list(start_terminals))
     word = [current]
-    is_from_language = True
     # Если не было случайных переходов или не завершались досрочно,
     # то слово сразу принадлежит языку и можно не проверять в дальнейшем
 
@@ -23,19 +21,17 @@ def generate_word(
                         can_continue = True # Можно продолжить дальше с вероятностью
             if not can_continue:
                 break
-            if random.random() < 0.5:
+            if random.random() >= settings['probability_of_not_end_when_final_symbol_found']:
                 # То есть, даже если мы в финальном терминале, можем с некоторой
                 # вероятностью продолжить генерацию, если у этого терминала есть следующий
                 # в матрице биграмм
                 break
 
-        if len(word) >= max_length:
-            is_from_language = False
+        if len(word) >= settings['max_length']:
             break
 
         # Возможность выбора случайного следующего терминала
-        if random.random() < possibility_of_not_con:
-            is_from_language = False # уже непонятно, откуда слово
+        if random.random() < settings['probability_of_random_next_term']:
             next_term = random.choice(terms)
         else:
             possible_next = []
@@ -46,11 +42,11 @@ def generate_word(
             if not possible_next:
                 # Если вдруг нет вариантов
                 next_term = random.choice(terms)
-                is_from_language = False
             else:
                 next_term = random.choice(possible_next)
 
         word.append(next_term)
         current = next_term
 
-    return word, is_from_language
+    word_str = "".join(word)
+    return word_str

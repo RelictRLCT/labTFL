@@ -1,6 +1,2 @@
-S -> ABC
-A -> CD
-B -> b
-C -> C
-C -> c
-D -> d
+S -> SaS
+S -> b

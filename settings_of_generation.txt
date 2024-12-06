@@ -1,0 +1,6 @@
+probability_of_random_next_term=0.2
+probability_of_not_end_when_final_symbol_found=0.5
+max_length=40
+max_time=30
+count_from_lang=5
+count_not_from_lang=5
