@@ -1,1 +1,4 @@
-S -> aaabaa
+S -> SbSa
+S -> aSSb
+S -> b
+S -> bS
