@@ -30,8 +30,8 @@ def main():
     show_bigram_matrix(bigram_matrix, start_terminals, end_terminals)
     words_from_lang, words_not_from_lang = generate_tests(cfg, bigram_matrix, settings, start_terminals, end_terminals)
     print_tests(words_from_lang, words_not_from_lang)
-    print(words_from_lang)
-    print(words_not_from_lang)
+    print("\nСлова из языка:", words_from_lang)
+    print("Слова не из языка", words_not_from_lang)
 
 
 if __name__ == "__main__":

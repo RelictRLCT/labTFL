@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+
 class CFG:
     def __init__(self, rules: dict, start_symbol: str, terms: list[str], nterms: list[str]):
         """

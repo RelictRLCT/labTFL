@@ -1,5 +1,6 @@
 import random
 
+
 def generate_word(
         bigram_matrix: set,
         terms: list[str],
