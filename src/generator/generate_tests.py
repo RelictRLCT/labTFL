@@ -34,3 +34,14 @@ def generate_tests(
             if len(words_not_from_lang) < settings["count_not_from_lang"]:
                 words_not_from_lang.add(word)
     return words_from_lang, words_not_from_lang
+
+
+def print_tests(words_from_lang: set[str], words_not_from_lang: set[str]) -> None:
+    import os
+    if not os.path.exists('tests.txt'):
+        os.mknod('tests.txt')
+    with open('tests.txt', 'w') as f:
+        for word in words_from_lang:
+            f.write(f"{word} 1\n")
+        for word in words_not_from_lang:
+            f.write(f"{word} 0\n")
