@@ -2,7 +2,7 @@ from src.validator.syntax_validator import validate_syntax
 
 
 def main():
-    grammar = r"a**(sdf\32)"
+    grammar = "a*aaba|(ba|v)"
     is_valid, msg = validate_syntax(grammar)
     print(is_valid, msg)
 

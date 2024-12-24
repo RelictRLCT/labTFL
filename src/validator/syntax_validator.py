@@ -3,9 +3,10 @@ def validate_syntax(s: str) -> (bool, str):
     count_br = 0
     length = len(s)
     prev_char = None
+
     for i in range(0, length):
         char = s[i]
-        print(i, char, prev_char)
+        #print(i, char, prev_char)
 
         if char not in allowed_chars:
             return False, f"Недопустимый символ '{char}', позиция {i}"
@@ -47,4 +48,7 @@ def validate_syntax(s: str) -> (bool, str):
         else:
             prev_char = char
 
-    return True, 'ОК!'
+    if count_br == 0:
+        return True, 'ОК!'
+    else:
+        return False, "Нарушен баланс скобок"
