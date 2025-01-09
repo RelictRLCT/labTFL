@@ -1,18 +1,18 @@
 def validate_syntax(s: str) -> (bool, str):
-    allowed_chars = set("abcdefghijklmnopqrstuvwxyz0123456789()|*\\")
+    allowed_chars = set("abcdefghijklmnopqrstuvwxyz0123456789()|*?:\\")
     count_br = 0
     length = len(s)
     prev_char = None
 
     for i in range(0, length):
         char = s[i]
-        #print(i, char, prev_char)
+        # print(i, char, prev_char)
 
         if char not in allowed_chars:
             return False, f"Недопустимый символ '{char}', позиция {i}"
 
         if char.isdigit():
-            if prev_char != '\\':
+            if prev_char != '\\' and prev_char != '?':
                 return False, f"Недопустимая цифра '{char}', позиция {i}"
             prev_char = char
 
@@ -44,6 +44,15 @@ def validate_syntax(s: str) -> (bool, str):
         elif char == "|":
             if i == length - 1 or prev_char in ("(", "|", None):
                 return False, f"'|' недопустима на позиции {i}"
+            prev_char = char
+
+        elif char == "?":
+            if prev_char != "(":
+                return False, f"'?' недопустим на позиции {i}"
+            prev_char = char
+        elif char == ":":
+            if prev_char != "?":
+                return False, f"':' недопустим на позиции {i}"
             prev_char = char
         else:
             prev_char = char
