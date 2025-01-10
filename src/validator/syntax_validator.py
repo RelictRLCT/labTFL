@@ -26,7 +26,7 @@ def validate_syntax(s: str) -> (bool, str):
 
         elif char == "(":
             count_br += 1
-            if i + 1 < length and (s[i + 1] == "*" or s[i + 1] == ")"):
+            if i + 1 < length and s[i + 1] in ('*', ')'):
                 return False, f"Нельзя ставить '{s[i + 1]}' сразу после '(' в позиции {i + 1}."
             prev_char = char
 
