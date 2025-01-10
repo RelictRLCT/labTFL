@@ -35,7 +35,7 @@ class RegexToTree:
 
     def parse_concatenation(self) -> Node:
         nodes = []
-        while (self.i < self.length) and (self.regex[self.i] not in (')', '|')):
+        while (self.i < self.length) and (self.regex[self.i] not in (')', '|', '*')):
             node = self.parse_repetition()
             nodes.append(node)
         if not nodes:
@@ -102,10 +102,8 @@ class RegexToTree:
             return BackrefNode(k)
 
         # Иначе символы
-        start = self.i
-        while (self.i < self.length) and (self.regex[self.i] not in ('(', ')', '|', '\\')):
-            self.i += 1
-        txt = self.regex[start:self.i]
+        txt = self.regex[self.i]
+        self.i += 1
         return SymbolsNode(txt)
 
 
