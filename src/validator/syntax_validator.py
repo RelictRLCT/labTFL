@@ -44,6 +44,8 @@ def validate_syntax(s: str) -> (bool, str):
         elif char == "|":
             if i == length - 1 or prev_char in ("(", "|", None):
                 return False, f"'|' недопустима на позиции {i}"
+            if s[i+1] in (")", "|"):
+                return False, f"Альтернатива не должна быть пустой на позиции {i}"
             prev_char = char
 
         elif char == "?":
