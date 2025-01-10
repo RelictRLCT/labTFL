@@ -78,6 +78,9 @@ def cfg_from_tree(root: Node):
                     group_id_to_nterm[g_id] = group_nterm
                     child_nt = get_or_make_nterm_for_node(node.child)
                     grammar[group_nterm].append([child_nt])
+                elif len(grammar[group_id_to_nterm[g_id]]) == 0:
+                    child_nt = get_or_make_nterm_for_node(node.child)
+                    grammar[group_id_to_nterm[g_id]].append([child_nt])
 
                 grammar[nterm].append([group_id_to_nterm[g_id]])
             else:
@@ -88,9 +91,6 @@ def cfg_from_tree(root: Node):
         elif isinstance(node, BackrefNode):
             # \num => ссылается на Gnum
             num = node.group_id
-            if num not in group_id_to_nterm:
-                group_id_to_nterm[num] = f"G{num}"
-
             grammar[nterm].append([group_id_to_nterm[num]])
 
         elif isinstance(node, GroupLinkNode):
