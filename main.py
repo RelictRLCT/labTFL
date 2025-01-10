@@ -7,20 +7,24 @@ from src.visualise.visualizer import visualize_tree
 
 
 def main():
-    grammar = "(a|(bb))(a|(?3))"
+    with open('regex.txt', 'r') as f:
+        grammar = f.readline().strip()
+        print(f"Переданный регекс: {grammar}")
+
+    #grammar = "(a|(bb))(a|(?6()))"
     is_valid, msg = validate_syntax(grammar)
     if not is_valid:
-        print(is_valid, msg)
+        print("Синтаксис регекса некорректен.", msg)
         return
 
     is_valid, tree = validate_regex(grammar)
-    print(is_valid)
 
     graph = Digraph(format="png")
     visualize_tree(tree, graph)
     graph.render("tree_view", view=False)
 
     if is_valid:
+        print("Регекс корректен")
         start_sym, gram = cfg_from_tree(tree)
 
         productions = gram['S']
@@ -31,6 +35,8 @@ def main():
                 productions = gram[nt]
                 prod_strings = [' '.join(prod) if prod else 'ε' for prod in productions]
                 print(f"{nt} -> {' | '.join(prod_strings)}")
+    else:
+        print("Регекс некорректен")
 
 
 if __name__ == "__main__":
