@@ -1,5 +1,5 @@
 def validate_syntax(s: str) -> (bool, str):
-    allowed_chars = set("abcdefghijklmnopqrstuvwxyz0123456789()|*?:\\")
+    allowed_chars = set("abcdefghijklmnopqrstuvwxyz123456789()|*?:\\")
     count_br = 0
     length = len(s)
     prev_char = None

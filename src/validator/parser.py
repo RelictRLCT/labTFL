@@ -148,10 +148,7 @@ def analyze_expr(
             result = (False, init_set)
         else:
             valid_sub, final_sub = analyze_expr(body, init_set, group_defs, res, status)
-            if not valid_sub:
-                result = (False, init_set)
-            else:
-                result = (True, init_set)
+            result = (valid_sub, init_set)
 
     elif isinstance(node, GroupNode):
         if node.group_id is None:
