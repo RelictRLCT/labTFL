@@ -10,6 +10,9 @@ def validate_regex(s: str) -> (bool, Node):
         print(f"ОШИБКА!!!!!!!!!!!!!!!! {e}")
         return False, None
 
+    if parser.group_count > 9:
+        return False, None
+
     # Все \num и (?num) должны быть <= parser.group_count
     def check_group_exists(node: Node) -> bool:
         if isinstance(node, BackrefNode):

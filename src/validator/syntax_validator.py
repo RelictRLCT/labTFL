@@ -51,6 +51,8 @@ def validate_syntax(s: str) -> (bool, str):
         elif char == "?":
             if prev_char != "(":
                 return False, f"'?' недопустим на позиции {i}"
+            if i + 1 < length and (not s[i + 1].isdigit() and s[i + 1] != ':'):
+                return False, f"Должна быть цифра или ':' после '?' на позиции {i}"
             prev_char = char
         elif char == ":":
             if prev_char != "?":
