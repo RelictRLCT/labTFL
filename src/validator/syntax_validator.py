@@ -55,6 +55,8 @@ def validate_syntax(s: str) -> (bool, str):
         elif char == ":":
             if prev_char != "?":
                 return False, f"':' недопустим на позиции {i}"
+            if i + 1 < length and s[i + 1] in ('*', ')'):
+                return False, f"После ':' недопустим '{s[i + 1]}' на позиции {i + 1}"
             prev_char = char
         else:
             prev_char = char
